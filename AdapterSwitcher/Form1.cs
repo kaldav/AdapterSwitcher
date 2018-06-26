@@ -12,50 +12,53 @@ namespace AdapterSwitcher
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private static void EnableAdapter(string interfaceName)
+        {
+            var psi =
+                new ProcessStartInfo("netsh", "interface set interface \"" + interfaceName + "\" enable")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+            Process p = new Process {StartInfo = psi};
+            p.Start();
+        }
+
+        private static void DisableAdapter(string interfaceName)
+        {
+            var psi =
+                new ProcessStartInfo("netsh", "interface set interface \"" + interfaceName + "\" disable")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+            Process p = new Process {StartInfo = psi};
+            p.Start();
+        }
+
+        private void ChangeToEthernetButton_Click(object sender, EventArgs e)
         {
             try
             {
-
-                Task TaskOne = Task.Factory.StartNew(() => DisableAdapter("Ethernet"));
-                TaskOne.Wait();
-                Task TaskTwo = Task.Factory.StartNew(() => EnableAdapter("Wi-Fi"));
-                TaskTwo.Wait();
-                
+                Task taskOne = Task.Factory.StartNew(() => DisableAdapter("Wi-Fi"));
+                taskOne.Wait();
+                Task taskTwo = Task.Factory.StartNew(() => EnableAdapter("Ethernet"));
+                taskTwo.Wait();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-        static void EnableAdapter(string interfaceName)
-        {
-            ProcessStartInfo psi = new ProcessStartInfo("netsh", "interface set interface \"" + interfaceName + "\" enable");
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            Process p = new Process();
-            p.StartInfo = psi;
-            p.Start();
-        }
 
-        static void DisableAdapter(string interfaceName)
-        {
-            ProcessStartInfo psi = new ProcessStartInfo("netsh", "interface set interface \"" + interfaceName + "\" disable");
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            Process p = new Process();
-            p.StartInfo = psi;
-            p.Start();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
+        private void ChangeToWifiButton_Click(object sender, EventArgs e)
         {
             try
             {
-                Task TaskOne = Task.Factory.StartNew(() => DisableAdapter("Wi-Fi"));
-                TaskOne.Wait();
-                Task TaskTwo = Task.Factory.StartNew(() => EnableAdapter("Ethernet"));
-                TaskTwo.Wait();
+                Task taskOne = Task.Factory.StartNew(() => DisableAdapter("Ethernet"));
+                taskOne.Wait();
+                Task taskTwo = Task.Factory.StartNew(() => EnableAdapter("Wi-Fi"));
+                taskTwo.Wait();
             }
             catch (Exception ex)
             {
